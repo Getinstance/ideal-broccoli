@@ -8,7 +8,9 @@ app = FastAPI(
     version="0.1.0",
 )   
 
-app.include_router(auth.router)
+base_prefix = "/api/v1" #TODO mudar para variavel de ambiente
+
+app.include_router(auth.router, prefix=base_prefix, tags=["auth"])
 
 
 if __name__ == "__main__":
