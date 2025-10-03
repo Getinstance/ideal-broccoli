@@ -1,16 +1,32 @@
 from fastapi import FastAPI
 import auth.router as auth
+import auth.models as auth_models
+import books.router as books
+import books.models as books_models
+import categories.router as categories
+import categories.models as categories_models
+import scrap.router as scrap
 import uvicorn
+from database.database import engine
 
+# Importa os modelos para criar as tabelas
+auth_models.Base.metadata.create_all(bind=engine)
+books_models.Base.metadata.create_all(bind=engine)
+categories_models.Base.metadata.create_all(bind=engine)
+
+# Setup FastAPI app
 app = FastAPI(
     title="Ideal Broccoli",
     description="Excelente para gestão de livros.",
-    version="0.1.0",
+    version="0.1.0",    
 )   
 
+# Inclui base routers
 base_prefix = "/api/v1" #TODO mudar para variavel de ambiente
-
-app.include_router(auth.router, prefix=base_prefix, tags=["auth"])
+app.include_router(auth.router, prefix=base_prefix)
+app.include_router(books.router, prefix=base_prefix)
+app.include_router(categories.router, prefix=base_prefix)
+app.include_router(scrap.router, prefix=base_prefix)
 
 
 if __name__ == "__main__":
