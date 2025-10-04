@@ -4,6 +4,7 @@ from categories import categories as categories_service
 from categories import models as categories_models
 from books import books as books_service
 from books import models as books_models
+from scrap.models import ScrapResponse
 
 router = APIRouter(tags=["Scrapping"], prefix="/scrap")
 
@@ -22,7 +23,8 @@ def background_scrap():
                 category_id=new_category.id
             ))
 
-@router.get("/trigger", status_code=202, summary="Trigger the scrapping process")
+@router.get("/trigger", status_code=202, summary="Trigger the scrapping process", response_model=ScrapResponse)
 def trigger_scrapping(background_tasks: BackgroundTasks):
+    # Poderia ser melhorado com um sistema de fila ou checagem para evitar execuções simultâneas
     background_tasks.add_task(background_scrap)
     return {"message": "Scrapping process started in the background."}
