@@ -29,7 +29,18 @@ app.include_router(categories.router, prefix=base_prefix)
 app.include_router(scrap.router, prefix=base_prefix)
 
 # Health check endpoint
-@app.get("/health", tags=["Health"], description="Health check endpoint")
+@app.get("/health", tags=["Health"], description="Health check endpoint", openapi_extra={
+    "responses": {
+        200: {
+            "description": "Service is healthy",
+            "content": {
+                "application/json": {
+                    "example": {"status": "ok"}
+                }
+            }
+        }
+    }
+})
 async def health_check():
     return {"status": "ok"}
 
