@@ -28,6 +28,10 @@ app.include_router(books.router, prefix=base_prefix)
 app.include_router(categories.router, prefix=base_prefix)
 app.include_router(scrap.router, prefix=base_prefix)
 
+# Health check endpoint
+@app.get("/health", tags=["Health"], description="Health check endpoint")
+async def health_check():
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

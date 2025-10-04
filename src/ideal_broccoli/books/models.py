@@ -2,6 +2,17 @@ from sqlalchemy import Column, Integer, String, Float, Boolean, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from database.database import Base
 from datetime import datetime
+from pydantic import BaseModel
+from categories.models import CategoryResponse
+
+class BookResponse(BaseModel):
+    id: int
+    title: str
+    price: float
+    rating: int
+    available: bool
+    image_url: str
+    category: CategoryResponse
 
 class Book(Base):
     __tablename__ = "books"
