@@ -10,14 +10,14 @@ def extract_book_data(article):
     title = article.h3.a['title']
     price = float(article.find('p', class_='price_color').text.replace('£', ''))
     rating = rates[article.p['class'][1]]  # Pegando a segunda classe que indica a avaliação
-    availability = article.find('p', class_='availability').text.strip() == 'In stock'
+    available = article.find('p', class_='availability').text.strip() == 'In stock'
     image_url = article.find('img')['src'].replace('../../../../', base_url)
 
     return {
         'title': title,
         'price': price,
         'rating': rating,
-        'availability': availability,
+        'available': available,
         'image_url': image_url
     }
 

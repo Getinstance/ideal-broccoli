@@ -10,7 +10,7 @@ class Book(Base):
     title = Column(String, index=True, nullable=False)
     price = Column(Float, nullable=False)
     rating = Column(Integer)  # 1-5 stars
-    in_stock = Column(Boolean, default=True)
+    available = Column(Boolean, default=True)
     image_url = Column(String)
     category_id = Column(Integer, ForeignKey("categories.id"))
     created_at = Column(DateTime, default=datetime.now)
