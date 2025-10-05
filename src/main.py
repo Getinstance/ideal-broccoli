@@ -19,7 +19,7 @@ categories_models.Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Ideal Broccoli",
     description="Excelente para gestão de livros.",
-    version="0.1.0",    
+    version="0.1.0",
 )
 
 app.add_middleware(
@@ -31,27 +31,30 @@ app.add_middleware(
 )
 
 # Inclui base routers
-base_prefix = "/api/v1" #TODO mudar para variavel de ambiente
+base_prefix = "/api/v1"  # TODO mudar para variavel de ambiente
 app.include_router(auth.router, prefix=base_prefix)
 app.include_router(books.router, prefix=base_prefix)
 app.include_router(categories.router, prefix=base_prefix)
 app.include_router(scrap.router, prefix=base_prefix)
 
+
 # Health check endpoint
-@app.get("/health", tags=["Health"], description="Health check endpoint", openapi_extra={
-    "responses": {
-        200: {
-            "description": "Service is healthy",
-            "content": {
-                "application/json": {
-                    "example": {"status": "ok"}
-                }
+@app.get(
+    "/health",
+    tags=["Health"],
+    description="Health check endpoint",
+    openapi_extra={
+        "responses": {
+            200: {
+                "description": "Service is healthy",
+                "content": {"application/json": {"example": {"status": "ok"}}},
             }
         }
-    }
-})
+    },
+)
 async def health_check():
     return {"status": "ok"}
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=3000, reload=True)

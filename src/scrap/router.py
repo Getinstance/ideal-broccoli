@@ -8,22 +8,33 @@ from scrap.models import ScrapResponse
 
 router = APIRouter(tags=["Scrapping"], prefix="/scrap")
 
-def background_scrap():
-    result = scrapinator.extract_from_books_to_scrape() 
-    
-    for category in result:
-        new_category = categories_service.add_category(categories_models.Category(name=category['name']))
-        for book in category['books']:
-            books_service.add_book(books_models.Book(
-                title=book['title'],
-                price=book['price'],
-                rating=book['rating'],
-                available=book['available'],
-                image_url=book['image_url'],
-                category_id=new_category.id
-            ))
 
-@router.get("/trigger", status_code=202, summary="Trigger the scrapping process", response_model=ScrapResponse)
+def background_scrap():
+    result = scrapinator.extract_from_books_to_scrape()
+
+    for category in result:
+        new_category = categories_service.add_category(
+            categories_models.Category(name=category["name"])
+        )
+        for book in category["books"]:
+            books_service.add_book(
+                books_models.Book(
+                    title=book["title"],
+                    price=book["price"],
+                    rating=book["rating"],
+                    available=book["available"],
+                    image_url=book["image_url"],
+                    category_id=new_category.id,
+                )
+            )
+
+
+@router.get(
+    "/trigger",
+    status_code=202,
+    summary="Trigger the scrapping process",
+    response_model=ScrapResponse,
+)
 def trigger_scrapping(background_tasks: BackgroundTasks):
     # Poderia ser melhorado com um sistema de fila ou checagem para evitar execuções simultâneas
     background_tasks.add_task(background_scrap)

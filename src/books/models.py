@@ -5,6 +5,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from categories.models import CategoryResponse
 
+
 class BookResponse(BaseModel):
     id: int
     title: str
@@ -14,9 +15,10 @@ class BookResponse(BaseModel):
     image_url: str
     category: CategoryResponse
 
+
 class Book(Base):
     __tablename__ = "books"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True, nullable=False)
     price = Column(Float, nullable=False)
@@ -25,5 +27,5 @@ class Book(Base):
     image_url = Column(String)
     category_id = Column(Integer, ForeignKey("categories.id"))
     created_at = Column(DateTime, default=datetime.now)
-    
+
     category = relationship("Category", back_populates="books")
