@@ -35,7 +35,7 @@ async def get_book_by_id(db: Session = Depends(get_db), book_id: int = None):
     response_model=list[BookResponse],
     status_code=200,
 )
-async def get_books(
+async def search_books(
     db: Session = Depends(get_db),
     page: int = 1,
     limit: int = 10,

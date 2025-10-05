@@ -40,7 +40,7 @@ def extract_next_page(soup, category_link):
         last_slash_index = category_link.rfind("/")
         return (
             category_link[: last_slash_index + 1] + next_page_link
-        )  ## Substitui a parte final da URL pela nova página
+        )  # Substitui a parte final da URL pela nova página
     return None
 
 
