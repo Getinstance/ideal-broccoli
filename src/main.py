@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import auth.router as auth
 import auth.models as auth_models
 import books.router as books
@@ -19,7 +20,15 @@ app = FastAPI(
     title="Ideal Broccoli",
     description="Excelente para gestão de livros.",
     version="0.1.0",    
-)   
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Inclui base routers
 base_prefix = "/api/v1" #TODO mudar para variavel de ambiente

@@ -20,7 +20,7 @@ def get_books(
     if categoryId:
         and_conditions.append(models.Book.category_id == categoryId)
 
-    categories =    query.filter(and_(*and_conditions)).offset(page - 1 * limit).limit(limit).all()
+    categories = query.filter(and_(*and_conditions)).offset((page - 1) * limit).limit(limit).all()
     return categories
 
 def get_book_by_id(
