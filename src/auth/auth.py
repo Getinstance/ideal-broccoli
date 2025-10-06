@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from fastapi import HTTPException
 from jose import JWTError, jwt
@@ -27,9 +27,9 @@ def get_password_hash(password: str) -> str:
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
 
     to_encode.update({"exp": expire, "type": "bearer"})
 
@@ -42,9 +42,9 @@ def create_refresh_token(
 ) -> tuple[str, int]:
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now() + timedelta(days=REFRESH_ACCESS_TOKEN_EXPIRE_DAYS)
+        expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_ACCESS_TOKEN_EXPIRE_DAYS)
 
     to_encode.update({"exp": expire, "type": "refresh"})
     expires_at = int(expire.timestamp())
@@ -59,7 +59,8 @@ def verify_token(token: str) -> Optional[str]:
         if username is None:
             return None
         return username
-    except JWTError:
+    except JWTError as e:
+        print(f"Token inválido JWTError: {e}")
         return None
 
 
@@ -93,3 +94,7 @@ def register_user(db, username: str, password: str):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+def get_user_by_username(db, username: str):
+    return db.query(User).filter(User.username == username).first()

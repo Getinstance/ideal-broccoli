@@ -1,10 +1,13 @@
 from fastapi import APIRouter, BackgroundTasks
+from fastapi.params import Depends
+from auth.models import User
 from scrap import scrapinator
 from categories import categories as categories_service
 from categories import models as categories_models
 from books import books as books_service
 from books import models as books_models
 from scrap.models import ScrapResponse
+from auth.router import get_current_user
 
 router = APIRouter(tags=["Scrapping"], prefix="/scrap")
 
@@ -35,7 +38,7 @@ def background_scrap():
     summary="Trigger the scrapping process",
     response_model=ScrapResponse,
 )
-def trigger_scrapping(background_tasks: BackgroundTasks):
+def trigger_scrapping(background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)):
     # Poderia ser melhorado com um sistema de fila ou checagem para evitar execuções simultâneas
     background_tasks.add_task(background_scrap)
     return {"message": "Scrapping process started in the background."}
