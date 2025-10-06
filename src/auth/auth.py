@@ -78,6 +78,27 @@ def generate_token(db, username: str, password: str) -> AccessToken:
     return AccessToken(
         access_token=access_token, refresh_token=refresh_token, expires_in=expires_in
     )
+    
+
+def refresh_token(token: str) -> AccessToken:
+    try:
+        payload = jwt.decode(token, REFRESH_SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "refresh":
+            raise HTTPException(status_code=401, detail="Invalid token type")
+
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        access_token = create_access_token(data={"sub": username})
+        refresh_token, expires_in = create_refresh_token(data={"sub": username})
+
+        return AccessToken(
+            access_token=access_token, refresh_token=refresh_token, expires_in=expires_in
+        )
+    except JWTError as e:
+        print(f"Token inválido JWTError: {e}")
+        return None
 
 
 def register_user(db, username: str, password: str):

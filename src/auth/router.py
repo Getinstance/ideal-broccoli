@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from auth import auth as auth_service
-from auth.models import UserRequest, UserResponse, AccessToken
+from auth.models import RefreshToken, UserRequest, UserResponse, AccessToken
 from database.database import get_db
 from sqlalchemy.orm import Session
 
@@ -32,9 +32,16 @@ def register(db: Session = Depends(get_db), user: UserRequest = None) -> UserRes
     return UserResponse(message="User registered successfully")
 
 
-@router.post("/refresh")
-def token_refresh():
-    return {"token": "nope"}
+@router.post(
+    "/refresh",
+    response_model=AccessToken,
+    description="Refresh access token using refresh token",
+    )
+def token_refresh(db: Session = Depends(get_db), refresh_token: RefreshToken = None) -> AccessToken:
+    access_token = auth_service.refresh_token(refresh_token.token)
+    if access_token is None:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")    
+    return access_token
 
 
 def get_current_user(

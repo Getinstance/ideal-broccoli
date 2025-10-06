@@ -20,6 +20,10 @@ class AccessToken(BaseModel):
     expires_in: int  # in seconds
 
 
+class RefreshToken(BaseModel):
+    token: str
+
+
 class User(Base):
     __tablename__ = "users"
 
