@@ -8,28 +8,33 @@ from books import books as books_service
 from books import models as books_models
 from scrap.models import ScrapResponse
 from auth.router import get_current_user
+from core.log import get_logger
 
+logger = get_logger(__name__)
 router = APIRouter(tags=["Scrapping"], prefix="/scrap")
 
 
 def background_scrap():
     result = scrapinator.extract_from_books_to_scrape()
 
-    for category in result:
-        new_category = categories_service.add_category(
-            categories_models.Category(name=category["name"])
-        )
-        for book in category["books"]:
-            books_service.add_book(
-                books_models.Book(
-                    title=book["title"],
-                    price=book["price"],
-                    rating=book["rating"],
-                    available=book["available"],
-                    image_url=book["image_url"],
-                    category_id=new_category.id,
-                )
+    try:
+        for category in result:
+            new_category = categories_service.add_category(
+                categories_models.Category(name=category["name"])
             )
+            for book in category["books"]:
+                books_service.add_book(
+                    books_models.Book(
+                        title=book["title"],
+                        price=book["price"],
+                        rating=book["rating"],
+                        available=book["available"],
+                        image_url=book["image_url"],
+                        category_id=new_category.id,
+                    )
+                )
+    except Exception as e:
+        logger.error(f"Error during scrapping process: {e}")
 
 
 @router.get(

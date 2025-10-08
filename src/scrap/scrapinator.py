@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 import requests
+from core.log import get_logger
 
+logger = get_logger(__name__)
 base_url = "https://books.toscrape.com/"
 rates = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
@@ -45,21 +47,21 @@ def extract_next_page(soup, category_link):
 
 
 def process_category(category):
-    print(f"Extraindo livros da categoria: {category['name']}")
+    logger.info(f"Extraindo livros da categoria: {category['name']}")
     while category["link"]:
-        print(f"  Acessando página: {category['link']}")
+        logger.info(f"Acessando página: {category['link']}")
         soup = BeautifulSoup(requests.get(category["link"]).content, "html.parser")
         articles = soup.find_all("article", class_="product_pod")
         books = [extract_book_data(article) for article in articles]
         category["books"] += books
         category["link"] = extract_next_page(soup, category["link"])
-        print(f"  {len(books)} livros extraídos para a categoria {category['name']}.")
+        logger.info(f"{len(books)} livros extraídos para a categoria {category['name']}.")
     return category
 
 
 def extract_from_books_to_scrape():
     # Fazendo uma requisição HTTP para a página desejada
-    print(f"Acessando {base_url}")
+    logger.info(f"Acessando {base_url}")
     response = requests.get(base_url)
     soup = BeautifulSoup(response.content, "html.parser")
 
@@ -71,14 +73,14 @@ def extract_from_books_to_scrape():
         if anchor.text.strip() != "Books"
     ]
 
-    print(f"{len(categories)} categorias encontradas.")
+    logger.info(f"{len(categories)} categorias encontradas.")
 
     # Extraindo todos os elementos <article> com a classe 'product_pod' de cada uma das categorias
     with Pool(8) as p:
         results = p.map(process_category, categories)
 
-    print(f"{sum(len(cat['books']) for cat in results)} livros foram extraídos.")
-    # [print(category) for category in results]
+    logger.info(f"{sum(len(cat['books']) for cat in results)} livros foram extraídos.")
+    # [logger.info(category) for category in results]
 
     return results
 
