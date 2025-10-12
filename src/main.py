@@ -6,6 +6,7 @@ import books.router as books
 import books.models as books_models
 import categories.router as categories
 import categories.models as categories_models
+import stats.router as stats
 import scrap.router as scrap
 import uvicorn
 from database.database import engine
@@ -36,6 +37,7 @@ app.include_router(auth.router, prefix=base_prefix)
 app.include_router(books.router, prefix=base_prefix)
 app.include_router(categories.router, prefix=base_prefix)
 app.include_router(scrap.router, prefix=base_prefix)
+app.include_router(stats.router, prefix=base_prefix)
 
 
 # Health check endpoint

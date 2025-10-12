@@ -2,6 +2,7 @@ from sqlalchemy import and_
 from database.database import get_db
 from sqlalchemy.orm import Session
 from books import models
+from sqlalchemy import func
 
 
 def get_books(
@@ -39,3 +40,17 @@ def add_book(book: models.Book, db: Session = next(get_db())):
     db.add(book)
     db.commit()
     return book
+
+
+def get_books_count(db: Session = next(get_db())):
+    return db.query(models.Book).count()
+
+
+def get_average_price_and_rating(db: Session = next(get_db())):
+    avg_price = db.query(func.avg(models.Book.price)).scalar() or 0.0
+    avg_rating = db.query(func.avg(models.Book.rating)).scalar() or 0.0
+    return round(float(avg_price), 2), round(float(avg_rating), 2)
+
+
+def get_available_books_count(db: Session = next(get_db())):
+    return db.query(models.Book).filter(models.Book.available.is_(True)).count()

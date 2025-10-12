@@ -1,3 +1,4 @@
+import random
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
 import requests
@@ -15,7 +16,10 @@ def extract_book_data(article):
     rating = rates[
         article.p["class"][1]
     ]  # Pegando a segunda classe que indica a avaliação
-    available = article.find("p", class_="availability").text.strip() == "In stock"
+    # 👇 Este seria o jeito certo de pegar a disponibilidade, mas no site tudo esta disponível.
+    # available = article.find("p", class_="availability").text.strip() == "In stock"
+    # Então vamos definir aleatoriamente
+    available = random.choice([True, True, True, True, False])
     image_url = article.find("img")["src"].replace("../../../../", base_url)
 
     return {
@@ -55,7 +59,9 @@ def process_category(category):
         books = [extract_book_data(article) for article in articles]
         category["books"] += books
         category["link"] = extract_next_page(soup, category["link"])
-        logger.info(f"{len(books)} livros extraídos para a categoria {category['name']}.")
+        logger.info(
+            f"{len(books)} livros extraídos para a categoria {category['name']}."
+        )
     return category
 
 
