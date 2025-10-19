@@ -37,7 +37,7 @@ def get_categories_stats(db: Session = next(get_db())) -> list[CategoriesStatsRe
             isouter=True,
         )
         .group_by(models.Category.id)
-        .order_by(func.count(book_models.Book.id).desc())   
+        .order_by(func.count(book_models.Book.id).desc())
         .all()
     )
 
@@ -53,3 +53,8 @@ def get_categories_stats(db: Session = next(get_db())) -> list[CategoriesStatsRe
     ]
 
     return result
+
+
+def delete_all_categories(db: Session = next(get_db())):
+    db.query(models.Category).delete()
+    db.commit()

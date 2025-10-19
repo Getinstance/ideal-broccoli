@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from auth.models import User
 import books.books as books_service
 import categories.categories as cateogries_service

@@ -10,6 +10,10 @@ def get_books(
     limit: int = 10,
     title: str = None,
     categoryId: int = None,
+    min_price: float = None,
+    max_price: float = None,
+    order_by: str = "id",
+    order_direction: str = "asc",
     db: Session = next(get_db()),
 ):
     query = db.query(models.Book)
@@ -21,9 +25,20 @@ def get_books(
 
     if categoryId:
         and_conditions.append(models.Book.category_id == categoryId)
+        
+    if min_price:
+        and_conditions.append(models.Book.price >= min_price)
+        
+    if max_price:
+        and_conditions.append(models.Book.price <= max_price)
 
     categories = (
         query.filter(and_(*and_conditions))
+        .order_by(
+            getattr(models.Book, order_by).asc()
+            if order_direction == "asc"
+            else getattr(models.Book, order_by).desc()
+        )
         .offset((page - 1) * limit)
         .limit(limit)
         .all()
@@ -54,3 +69,8 @@ def get_average_price_and_rating(db: Session = next(get_db())):
 
 def get_available_books_count(db: Session = next(get_db())):
     return db.query(models.Book).filter(models.Book.available.is_(True)).count()
+
+
+def delete_all_books(db: Session = next(get_db())):
+    db.query(models.Book).delete()
+    db.commit()

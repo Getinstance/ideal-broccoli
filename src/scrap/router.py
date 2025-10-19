@@ -47,3 +47,13 @@ def trigger_scrapping(background_tasks: BackgroundTasks, current_user: User = De
     # Poderia ser melhorado com um sistema de fila ou checagem para evitar execuções simultâneas
     background_tasks.add_task(background_scrap)
     return {"message": "Scrapping process started in the background."}
+
+
+@router.delete(
+    "/cleanup",
+    status_code=204,
+    summary="Cleanup all scrapped data",
+)
+async def cleanup_scrap_data():
+    books_service.delete_all_books()
+    categories_service.delete_all_categories()

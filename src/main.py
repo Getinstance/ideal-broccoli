@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi import Depends
 from fastapi.middleware.cors import CORSMiddleware
 import auth.router as auth
 import auth.models as auth_models
@@ -9,7 +10,10 @@ import categories.models as categories_models
 import stats.router as stats
 import scrap.router as scrap
 import uvicorn
+from sqlalchemy.orm import Session
 from database.database import engine
+from database.database import get_db
+from database.database import is_database_online
 
 # Importa os modelos para criar as tabelas
 auth_models.Base.metadata.create_all(bind=engine)
@@ -54,8 +58,12 @@ app.include_router(stats.router, prefix=base_prefix)
         }
     },
 )
-async def health_check():
-    return {"status": "ok"}
+async def health_check(db: Session = Depends(get_db)):
+    return (
+        {"status": "ok"}
+        if await is_database_online(db)
+        else {"status": "NOK", "reason": "database offline"}
+    )
 
 
 if __name__ == "__main__":

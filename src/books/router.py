@@ -56,3 +56,42 @@ async def search_books(
     return books_service.get_books(
         db=db, page=page, limit=limit, title=title, categoryId=categoryId
     )
+
+
+@router.get(
+    "/top-rated/",
+    description="List top rated books",
+    response_model=list[BookResponse],
+    status_code=200,
+)
+async def top_rated_books(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    limit: int = 10,
+):
+    return books_service.get_books(
+        db=db, page=1, limit=limit, order_by="rating", order_direction="desc"
+    )
+
+
+@router.get(
+    "/price-range/",
+    description="Filter books by price range",
+    response_model=list[BookResponse],
+    status_code=200,
+)
+async def price_range_books(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    min_price: float = 0.0,
+    max_price: float = 100.0,
+    page: int = 1,
+    limit: int = 10,
+):
+    return books_service.get_books(
+        db=db,
+        page=page,
+        limit=limit,
+        min_price=min_price,
+        max_price=max_price,
+    )
