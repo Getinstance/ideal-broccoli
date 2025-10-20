@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi import Depends
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import auth.router as auth
 import auth.models as auth_models
@@ -14,11 +15,6 @@ from sqlalchemy.orm import Session
 from database.database import engine
 from database.database import get_db
 from database.database import is_database_online
-from dotenv import load_dotenv
-
-
-# Inicializa variáveis de ambiente
-load_dotenv()
 
 # Importa os modelos para criar as tabelas
 auth_models.Base.metadata.create_all(bind=engine)
@@ -47,6 +43,9 @@ app.include_router(books.router, prefix=base_prefix)
 app.include_router(categories.router, prefix=base_prefix)
 app.include_router(scrap.router, prefix=base_prefix)
 app.include_router(stats.router, prefix=base_prefix)
+
+# Arquivos de frontend estáticos
+app.mount("/", StaticFiles(directory="src/ui", html=True), name="ui")
 
 
 # Health check endpoint

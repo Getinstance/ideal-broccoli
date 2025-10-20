@@ -9,6 +9,13 @@ from books import models as books_models
 from scrap.models import ScrapResponse
 from auth.router import get_current_user
 from core.log import get_logger
+from dotenv import load_dotenv
+import os
+
+# Inicializa variáveis de ambiente
+load_dotenv()
+
+MULTI_THREAD_SCRAPING = os.getenv("MULTI_THREAD_SCRAPING", "false").lower() == "true"
 
 logger = get_logger(__name__)
 router = APIRouter(tags=["Scrapping"], prefix="/scrap")
@@ -44,9 +51,14 @@ def background_scrap():
     response_model=ScrapResponse,
 )
 def trigger_scrapping(background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)):
-    # Poderia ser melhorado com um sistema de fila ou checagem para evitar execuções simultâneas
-    background_tasks.add_task(background_scrap)
-    return {"message": "Scrapping process started in the background."}
+    # Background task só funciona localmente ou em servidores que suportam tarefas em segundo plano.
+    # Em servidores serverless como Vercel, a tarefa pode não ser executada corretamente.
+    if MULTI_THREAD_SCRAPING:
+        background_tasks.add_task(background_scrap) 
+        return {"message": "Scrapping process started in the background."}
+    else:
+        background_scrap()
+        return {"message": "Scrapping process completed."}
 
 
 @router.delete(
