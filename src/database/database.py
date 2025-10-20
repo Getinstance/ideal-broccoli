@@ -3,15 +3,14 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 from core.log import get_logger
+from dotenv import load_dotenv
 import os
-
-
-logger = get_logger(__name__)
 
 # Inicializa variáveis de ambiente
 load_dotenv()
+
+logger = get_logger(__name__)
 
 SQLALCHEMY_DATABASE_URL = os.getenv(
     "DATABASE_URL", "postgresql://localhost/ideal_broccoli"

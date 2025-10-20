@@ -1,21 +1,27 @@
 import logging
 import sys
+import os
 
-# TODO Pegar level padrão e formato de um arquivo de configuração
-# Mais info em https://docs.python.org/3/library/logging.html#logging.basicConfig
+
+LOG_FILE_ENABLED = os.getenv("LOG_FILE_ENABLED", False)
+LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", "logs/ideal_broccoli.log")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
 format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 datefmt = "%Y-%m-%dT%H:%M:%S%z"
 
+# Mais info em https://docs.python.org/3/library/logging.html#logging.basicConfig
 logging.basicConfig(
-    filename="ideal_broccoli.log",
+    filename=LOG_FILE_PATH if LOG_FILE_ENABLED else None,
     encoding="utf-8",
-    level=logging.INFO,
+    level=logging.INFO if not LOG_LEVEL else getattr(logging, LOG_LEVEL),
     format=format,
     datefmt=datefmt,
 )
+
 root_logger = logging.StreamHandler(sys.stdout)
 root_logger.formatter = logging.Formatter(format, datefmt=datefmt)
+
 logging.getLogger().addHandler(root_logger)
 
 

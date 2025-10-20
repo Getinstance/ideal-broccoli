@@ -14,6 +14,11 @@ from sqlalchemy.orm import Session
 from database.database import engine
 from database.database import get_db
 from database.database import is_database_online
+from dotenv import load_dotenv
+
+
+# Inicializa variáveis de ambiente
+load_dotenv()
 
 # Importa os modelos para criar as tabelas
 auth_models.Base.metadata.create_all(bind=engine)
