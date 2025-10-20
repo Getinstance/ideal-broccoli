@@ -22,9 +22,8 @@ router = APIRouter(tags=["Scrapping"], prefix="/scrap")
 
 
 def background_scrap():
-    result = scrapinator.extract_from_books_to_scrape()
-
     try:
+        result = scrapinator.extract_from_books_to_scrape()
         for category in result:
             new_category = categories_service.add_category(
                 categories_models.Category(name=category["name"])
