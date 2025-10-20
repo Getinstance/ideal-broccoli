@@ -5,11 +5,15 @@ from books import models
 from sqlalchemy import func
 
 
+def get_all_books(db: Session = next(get_db())):
+    return db.query(models.Book).all()
+
+
 def get_books(
     page: int = 1,
     limit: int = 10,
     title: str = None,
-    categoryId: int = None,
+    category_id: int = None,
     min_price: float = None,
     max_price: float = None,
     order_by: str = "id",
@@ -23,12 +27,12 @@ def get_books(
     if title:
         and_conditions.append(models.Book.title.ilike(f"%{title}%"))
 
-    if categoryId:
-        and_conditions.append(models.Book.category_id == categoryId)
-        
+    if category_id:
+        and_conditions.append(models.Book.category_id == category_id)
+
     if min_price:
         and_conditions.append(models.Book.price >= min_price)
-        
+
     if max_price:
         and_conditions.append(models.Book.price <= max_price)
 

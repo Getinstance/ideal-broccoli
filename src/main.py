@@ -10,6 +10,7 @@ import categories.router as categories
 import categories.models as categories_models
 import stats.router as stats
 import scrap.router as scrap
+import machine_learning.router as machine_learning
 import uvicorn
 from sqlalchemy.orm import Session
 from database.database import engine
@@ -43,6 +44,7 @@ app.include_router(books.router, prefix=base_prefix)
 app.include_router(categories.router, prefix=base_prefix)
 app.include_router(scrap.router, prefix=base_prefix)
 app.include_router(stats.router, prefix=base_prefix)
+app.include_router(machine_learning.router, prefix=base_prefix)
 
 # Arquivos de frontend estáticos
 app.mount("/", StaticFiles(directory="src/ui", html=True), name="ui")

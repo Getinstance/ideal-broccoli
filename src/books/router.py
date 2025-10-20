@@ -51,10 +51,10 @@ async def search_books(
     page: int = 1,
     limit: int = 10,
     title: str = None,
-    categoryId: int = None,
+    category_id: int = None,
 ):
     return books_service.get_books(
-        db=db, page=page, limit=limit, title=title, categoryId=categoryId
+        db=db, page=page, limit=limit, title=title, category_id=category_id
     )
 
 
