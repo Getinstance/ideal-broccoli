@@ -21,9 +21,9 @@ logger = get_logger(__name__)
 router = APIRouter(tags=["Scrapping"], prefix="/scrap")
 
 
-def background_scrap():
+def background_scrap(multithread: bool):
     try:
-        result = scrapinator.extract_from_books_to_scrape()
+        result = scrapinator.extract_from_books_to_scrape(multithread)
         for category in result:
             new_category = categories_service.add_category(
                 categories_models.Category(name=category["name"])
@@ -53,10 +53,10 @@ def trigger_scrapping(background_tasks: BackgroundTasks, current_user: User = De
     # Background task só funciona localmente ou em servidores que suportam tarefas em segundo plano.
     # Em servidores serverless como Vercel, a tarefa pode não ser executada corretamente.
     if MULTI_THREAD_SCRAPING:
-        background_tasks.add_task(background_scrap) 
+        background_tasks.add_task(background_scrap, MULTI_THREAD_SCRAPING)
         return {"message": "Scrapping process started in the background."}
     else:
-        background_scrap()
+        background_scrap(MULTI_THREAD_SCRAPING)
         return {"message": "Scrapping process completed."}
 
 

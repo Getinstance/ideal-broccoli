@@ -14,7 +14,7 @@ datefmt = "%Y-%m-%dT%H:%M:%S%z"
 logging.basicConfig(
     filename=LOG_FILE_PATH if LOG_FILE_ENABLED else None,
     encoding="utf-8",
-    level=logging.INFO if not LOG_LEVEL else getattr(logging, LOG_LEVEL),
+    level=logging.DEBUG if not LOG_LEVEL else getattr(logging, LOG_LEVEL),
     format=format,
     datefmt=datefmt,
 )

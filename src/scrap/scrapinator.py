@@ -65,7 +65,7 @@ def process_category(category):
     return category
 
 
-def extract_from_books_to_scrape():
+def extract_from_books_to_scrape(multithread: bool = False):
     # Fazendo uma requisição HTTP para a página desejada
     logger.info(f"Acessando {base_url}")
     response = requests.get(base_url)
@@ -82,8 +82,13 @@ def extract_from_books_to_scrape():
     logger.info(f"{len(categories)} categorias encontradas.")
 
     # Extraindo todos os elementos <article> com a classe 'product_pod' de cada uma das categorias
-    with Pool(8) as p:
-        results = p.map(process_category, categories)
+    if not multithread:
+        results = []
+        for category in categories:
+            results.append(process_category(category))
+    else:
+        with Pool(8) as p:
+            results = p.map(process_category, categories)
 
     logger.info(f"{sum(len(cat['books']) for cat in results)} livros foram extraídos.")
     # [logger.info(category) for category in results]
