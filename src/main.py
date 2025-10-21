@@ -46,11 +46,9 @@ app.include_router(scrap.router, prefix=base_prefix)
 app.include_router(stats.router, prefix=base_prefix)
 app.include_router(machine_learning.router, prefix=base_prefix)
 
-# Arquivos de frontend estáticos
-app.mount("/", StaticFiles(directory="src/ui", html=True), name="ui")
-
 
 # Health check endpoint
+@app.get("/", include_in_schema=False)
 @app.get(
     "/health",
     tags=["Health"],
