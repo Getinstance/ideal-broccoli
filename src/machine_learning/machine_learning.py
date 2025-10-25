@@ -7,8 +7,12 @@ from machine_learning.models import (
 )
 from sqlalchemy.orm import Session
 from database.database import get_db
+from core.log import get_logger
 import pandas as pd
 import pickle
+
+
+logger = get_logger(__name__)
 
 
 def get_ml_books(db: Session = next(get_db())):
@@ -29,15 +33,21 @@ def get_training_data(db: Session = next(get_db()), random_state: int = 42):
 def predict_book_rating(request: BookPredictionRequest = None):
     # Carregar modelo treinado (exemplo simplificado)
 
-    with open(os.path.dirname(__file__) + "/ml_model.pkl", "rb") as f:
-        model = pickle.load(f)
+    logger.info(f"Carregando modelo de ML para predição : {os.path.dirname(__file__)}")
 
-    # Preparar os dados de entrada
-    input_data = [[request.price, request.category_id]]
+    try:
+        with open(os.path.dirname(__file__) + "/ml_model.pkl", "rb") as f:
+            model = pickle.load(f)
 
-    # Fazer a previsão
-    predicted_rate = model.predict(input_data)[0]
+        # Preparar os dados de entrada
+        input_data = [[request.price, request.category_id]]
 
-    f.close()
+        # Fazer a previsão
+        predicted_rate = model.predict(input_data)[0]
+
+        f.close()
+    except Exception as e:
+        logger.error(f"Erro ao carregar o modelo de ML ou fazer a predição: {e}")
+        predicted_rate = -1  # Valor padrão em caso de erro
 
     return BookPredictionResponse(predicted_rate=int(predicted_rate))
