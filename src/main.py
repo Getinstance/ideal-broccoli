@@ -15,8 +15,9 @@ from sqlalchemy.orm import Session
 from database.database import engine
 from database.database import get_db
 from database.database import is_database_online
-from prometheus_client import make_asgi_app
-from prometheus_fastapi_instrumentator import Instrumentator
+from core.metrics import make_asgi_sec_app
+
+# from prometheus_fastapi_instrumentator import Instrumentator
 
 # Importa os modelos para criar as tabelas
 auth_models.Base.metadata.create_all(bind=engine)
@@ -39,12 +40,14 @@ app.add_middleware(
 )
 
 # Prometheus
-metrics_app = make_asgi_app()
+# Instrumentator().instrument(app).expose(app)
+# Usando o endpoint /metrics com autenticação básica
+# ao inves do padrão /metrics do Instrumentator
+metrics_app = make_asgi_sec_app()
 app.mount("/metrics", metrics_app)
-Instrumentator().instrument(app).expose(app)
 
 # Inclui base routers
-base_prefix = "/api/v1"  # TODO mudar para variavel de ambiente
+base_prefix = "/api/v1"
 app.include_router(auth.router, prefix=base_prefix)
 app.include_router(books.router, prefix=base_prefix)
 app.include_router(categories.router, prefix=base_prefix)
