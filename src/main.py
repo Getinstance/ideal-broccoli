@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi import Depends
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import auth.router as auth
 import auth.models as auth_models
@@ -16,6 +15,8 @@ from sqlalchemy.orm import Session
 from database.database import engine
 from database.database import get_db
 from database.database import is_database_online
+from prometheus_client import make_asgi_app
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # Importa os modelos para criar as tabelas
 auth_models.Base.metadata.create_all(bind=engine)
@@ -36,6 +37,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Prometheus
+metrics_app = make_asgi_app()
+app.mount("/metrics", metrics_app)
+Instrumentator().instrument(app).expose(app)
 
 # Inclui base routers
 base_prefix = "/api/v1"  # TODO mudar para variavel de ambiente
