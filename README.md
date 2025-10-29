@@ -1,10 +1,43 @@
 # ideal-broccoli
+
 Fase 1 - FIAP
 
-# Executar o postgres localmente
+## Executar o postgres localmente
+
 `docker run --name ideal-broccoli-db -e POSTGRES_DB=ideal_broccoli -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres`
 
-# Diagrama de sequência da pipeline de scrap.
+## Diagrama Entidade Relacionamento
+
+``` mermaid
+erDiagram
+    categories {
+        INT id PK
+        VARCHAR name
+        TIMESTAMP created_at
+    }
+
+    books {
+        INT id PK
+        VARCHAR title
+        FLOAT price
+        INT rating
+        BOOLEAN available
+        VARCHAR image_url
+        INT category_id FK
+        TIMESTAMP created_at
+    }
+
+    users {
+        INT id PK
+        VARCHAR username
+        VARCHAR hashed_password
+        TIMESTAMP created_at
+    }
+
+    categories ||--o{ books : "has"
+```
+
+## Diagrama de sequência da pipeline de scrap
 
 ``` mermaid
 sequenceDiagram
