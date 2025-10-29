@@ -4,14 +4,19 @@ from fastapi import HTTPException
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from auth.models import AccessToken, User
+from dotenv import load_dotenv
+import os
 
-SECRET_KEY = "segredo_secreto_muito_secreto"  # TODO Colocar em variavel de ambiente.
-REFRESH_SECRET_KEY = (
-    "segredo_secreto_muito_mais_secreto"  # TODO Colocar em variavel de ambiente.
+# Inicializa variáveis de ambiente
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY", "segredo_secreto_muito_secreto")
+REFRESH_SECRET_KEY = os.getenv(
+    "REFRESH_SECRET_KEY", "segredo_secreto_muito_mais_secreto"
 )
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-REFRESH_ACCESS_TOKEN_EXPIRE_DAYS = 14
+ALGORITHM = os.getenv("SECRET_KEY", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30)
+REFRESH_ACCESS_TOKEN_EXPIRE_DAYS = os.getenv("REFRESH_ACCESS_TOKEN_EXPIRE_DAYS", 14)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -29,7 +34,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+        )
 
     to_encode.update({"exp": expire, "type": "bearer"})
 
@@ -44,7 +51,9 @@ def create_refresh_token(
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(days=REFRESH_ACCESS_TOKEN_EXPIRE_DAYS)
+        expire = datetime.now(timezone.utc) + timedelta(
+            days=REFRESH_ACCESS_TOKEN_EXPIRE_DAYS
+        )
 
     to_encode.update({"exp": expire, "type": "refresh"})
     expires_at = int(expire.timestamp())
@@ -78,7 +87,7 @@ def generate_token(db, username: str, password: str) -> AccessToken:
     return AccessToken(
         access_token=access_token, refresh_token=refresh_token, expires_in=expires_in
     )
-    
+
 
 def refresh_token(token: str) -> AccessToken:
     try:
@@ -94,7 +103,9 @@ def refresh_token(token: str) -> AccessToken:
         refresh_token, expires_in = create_refresh_token(data={"sub": username})
 
         return AccessToken(
-            access_token=access_token, refresh_token=refresh_token, expires_in=expires_in
+            access_token=access_token,
+            refresh_token=refresh_token,
+            expires_in=expires_in,
         )
     except JWTError as e:
         print(f"Token inválido JWTError: {e}")
