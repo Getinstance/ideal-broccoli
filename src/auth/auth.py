@@ -14,9 +14,9 @@ SECRET_KEY = os.getenv("SECRET_KEY", "segredo_secreto_muito_secreto")
 REFRESH_SECRET_KEY = os.getenv(
     "REFRESH_SECRET_KEY", "segredo_secreto_muito_mais_secreto"
 )
-ALGORITHM = os.getenv("SECRET_KEY", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30)
-REFRESH_ACCESS_TOKEN_EXPIRE_DAYS = os.getenv("REFRESH_ACCESS_TOKEN_EXPIRE_DAYS", 14)
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
+REFRESH_ACCESS_TOKEN_EXPIRE_DAYS = int(os.getenv("REFRESH_ACCESS_TOKEN_EXPIRE_DAYS", 14))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
