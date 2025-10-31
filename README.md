@@ -106,7 +106,7 @@ erDiagram
     categories ||--o{ books : "has"
 ```
 
-## Pipeline de ingestão de dados
+## Pipeline de ingestão de dados de books.toscrap.com
 
 ![image](./docs/scrapinator.png)
 
@@ -166,7 +166,34 @@ Acesse a documentação publicada em: [ideal-broccoli Swagger UI](https://ideal-
 
 ### 1. Fluxo de autenticação
 
-#### 1.1 Registrar novo usuário
+#### 1.1 Autenticar usuário `/auth/login`
+
+Autenticação básica de usuário e senha, retorna tanto o token de acesso quanto
+o token refresh.
+
+``` shell
+# REQUEST
+curl -X 'POST' \
+  'https://ideal-broccoli-bd8g.onrender.com/api/v1/auth/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "username": "user@example.com",
+  "password": "string"
+}'
+
+#RESPONSE
+{
+  "token_type": "bearer",
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYxODcyMDI2LCJ0eXBlIjoiYmVhcmVyIn0.nope",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYzMDc5ODI2LCJ0eXBlIjoicmVmcmVzaCJ9.nope",
+  "expires_in": 1763079826
+}
+```
+
+#### 1.2 Registrar novo usuário `/auth/register`
+
+Cadastra um novo usuário com acesso aos endpoints da aplicação.
 
 ``` shell
 # REQUEST
@@ -185,34 +212,37 @@ curl -X 'POST' \
 }
 ```
 
-#### 1.2 Autenticar usuário
+#### 1.3 Refresh token `/auth/refresh`
+
+Utilizado para obter um token de acesso baseado no token de longa duração fornecido
+no `/login` .
 
 ``` shell
 #REQUEST
 curl -X 'POST' \
-  'https://ideal-broccoli-bd8g.onrender.com/api/v1/auth/login' \
+  'https://ideal-broccoli-bd8g.onrender.com/api/v1/auth/refresh' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "username": "user@example.com",
-  "password": "string"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYzMDc5ODI2LCJ0eXBlIjoicmVmcmVzaCJ9.aMck1ACugihwjE2f2Vhj-vMYdNnke_kVinofQF2vuus"
 }'
 
 #RESPONSE
 
 Response body
-Download
 {
   "token_type": "bearer",
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYxNzc5OTUwLCJ0eXBlIjoiYmVhcmVyIn0.nope",
-  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYyOTg3NzUwLCJ0eXBlIjoicmVmcmVzaCJ9.nope",
-  "expires_in": 1762987750
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYxODcyMTQ2LCJ0eXBlIjoiYmVhcmVyIn0.nope",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYzMDc5OTQ2LCJ0eXBlIjoicmVmcmVzaCJ9.nope",
+  "expires_in": 1763079946
 }
 ```
 
 ### 2 Livros
 
-#### 2.2 Listagem de livros
+#### 2.2 Listagem de livros `/books`
+
+Listagem paginada e sem filtros.
 
 ``` shell
 #REQUEST
@@ -246,6 +276,124 @@ curl -X 'GET' \
       "id": 229,
       "name": "Travel"
     }
+  }
+]
+```
+
+#### 2.3 Detalhe de livros `/books/{id}`
+
+Dados de um livro por ID
+
+#### 2.4 Busca de livros `/books/search`
+
+Busca paginada de livros por parametros. (Titulo ou Categoria)
+
+#### 2.5 Top Rated `/books/top-rated`
+
+Lista de livros ordenado por avaliações melhores.
+
+#### 2.6 Faixa de preço `/books/price-range`
+
+Permite busca de livros baseado em um range de preços.
+
+### 3 Categorias
+
+#### 3.1 Lista de categorias `/categories`
+
+Lista paginada de categorias.
+
+``` shell
+#REQUEST
+curl -X 'GET' \
+  'https://ideal-broccoli-bd8g.onrender.com/api/v1/categories/' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYxODczMzAyLCJ0eXBlIjoiYmVhcmVyIn0.nope'
+
+#RESPONSE
+[
+  {
+    "id": 229,
+    "name": "Travel"
+  },
+  {
+    "id": 230,
+    "name": "Mystery"
+  },
+  {
+    "id": 231,
+    "name": "Historical Fiction"
+  }
+]
+```
+
+### 4 Raspagem
+
+#### 4.1 Trigger scrap `/scrap/trigger`
+
+Inicia o processo de scrapping de <https://books.toscrape.com/>
+
+#### 4.2 Scrap Clean-up `/scrap/cleanup`
+
+Endpoint utilitário para limpar os dados de livros.
+(Uso acadêmico)
+
+### 5 Estatísticas
+
+#### 5.1 Geral `/statistics/overview`
+
+Contadores gerais dos livros cadastrados.
+
+``` shell
+#REQUEST
+curl -X 'GET' \
+  'https://ideal-broccoli-bd8g.onrender.com/api/v1/stats/overview' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYxODczMzAyLCJ0eXBlIjoiYmVhcmVyIn0.nope'
+
+#RESPONSE
+{
+  "total_books": 1000,
+  "total_categories": 50,
+  "average_price": 35.07,
+  "average_rating": 2.92,
+  "available_books": 798,
+  "unavailable_books": 202
+}
+```
+
+#### 5.2 Categorias `/statistics/categories`
+
+Contadores gerais das categorias dos livros, ordenado por quantidade de livros.
+
+``` shell
+#REQUEST
+curl -X 'GET' \
+  'https://ideal-broccoli-bd8g.onrender.com/api/v1/stats/categories' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzYxODczMzAyLCJ0eXBlIjoiYmVhcmVyIn0.nope'
+
+#RESPONSE
+[
+  {
+    "category_id": 242,
+    "category_name": "Default",
+    "total_books": 152,
+    "average_price": 34.39269736842105,
+    "average_rating": 2.835526315789474
+  },
+  {
+    "category_id": 240,
+    "category_name": "Nonfiction",
+    "total_books": 110,
+    "average_price": 34.26018181818182,
+    "average_rating": 2.881818181818182
+  },
+  {
+    "category_id": 232,
+    "category_name": "Sequential Art",
+    "total_books": 75,
+    "average_price": 34.57226666666667,
+    "average_rating": 2.973333333333333
   }
 ]
 ```
