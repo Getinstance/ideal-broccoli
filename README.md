@@ -1,14 +1,12 @@
 # ideal-broccoli
 
-Fase 1 - FIAP
-
-[TOC]
+Desafio: Criação de uma API Pública para Consulta de Livros
 
 ## Instruções de instalação
 
 ### Requisitos minimos
 
-- Python ^3.12
+- Python ^3.12 <https://www.python.org/downloads/>
 - Docker ou PostgresSQL
 
 ### .env inicial
@@ -26,18 +24,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 REFRESH_ACCESS_TOKEN_EXPIRE_DAYS=14
 ```
 
-DATABASE_URL => URL string de conexão com o postgress.
-Outros bancos de dados são suportados, mas as libs de conexão devem ser instaladas.
-
-LOG_FILE_ENABLED => Indica se o arquivo de log deve ser gerado
-LOG_FILE_PATH => Caminha relativo ou absoluto do arquivo de logs.
-LOG_LEVEL => Se não indicado assume o padrão `INFO`
-MULTI_THREAD_SCRAPING => Indica se o scrap deve ser executado em multi thread.
-SECRET_KEY => Segredo/Salt do token JWT
-REFRESH_SECRET_KEY => Segredo/Salt do refresh token JWT
-ALGORITHM => Algoritimo utilizado no token
-ACCESS_TOKEN_EXPIRE_MINUTES => Tempo de expiração do token
-REFRESH_ACCESS_TOKEN_EXPIRE_DAYS => Tempo de expiração do regfresh token
+| Variável | Descrição |
+|---|---|
+|*DATABASE_URL*| URL string de conexão com o postgress. (Outros bancos de dados são suportados, mas as libs de conexão devem ser instaladas.)|
+|*LOG_FILE_ENABLED* | Indica se o arquivo de log deve ser gerado|
+|*LOG_FILE_PATH* | Caminha relativo ou absoluto do arquivo de logs.|
+|*LOG_LEVEL* | Se não indicado assume o padrão `INFO`|
+|*MULTI_THREAD_SCRAPING* | Indica se o scrap deve ser executado em multi thread.|
+|*SECRET_KEY* | Segredo/Salt do token JWT|
+|*REFRESH_SECRET_KEY* | Segredo/Salt do refresh token JWT|
+|*ALGORITHM* | Algoritimo utilizado no token|
+|*ACCESS_TOKEN_EXPIRE_MINUTES* | Tempo de expiração do token|
+|*REFRESH_ACCESS_TOKEN_EXPIRE_DAYS* | Tempo de expiração do regfresh token|
 
 ### Executar o postgres localmente
 
