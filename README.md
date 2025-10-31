@@ -2,6 +2,12 @@
 
 Desafio: Criação de uma API Pública para Consulta de Livros
 
+O nome do reposotório foi sugerido pelo próprio GitHub na criação do repositório.
+
+Gostei da sugestão e assim ficou.
+
+![image](./docs/ideal_broccoli.png)
+
 ## Instruções de instalação
 
 ### Requisitos minimos
