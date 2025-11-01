@@ -51,7 +51,9 @@ REFRESH_ACCESS_TOKEN_EXPIRE_DAYS=14
 
 Estando na raiz do projeto:
 
-`uvicorn main:app --reload --host 0.0.0.0 --port 3000 --app-dir=src`
+`pip install -r requirements.txt` para a instalação das dependencias.
+
+`uvicorn main:app --reload --host 0.0.0.0 --port 3000 --app-dir=src` para a execução do projeto.
 
 O projeto funciona como uma API Rest stateless.
 
