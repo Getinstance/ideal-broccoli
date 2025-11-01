@@ -8,6 +8,17 @@ Gostei da sugestão e assim ficou.
 
 ![image](./docs/ideal_broccoli.png)
 
+## Links do desafio
+
+• Link do vídeo.
+  [Vídeo no Loom](https://www.loom.com/share/7e8a883ec1b749a4916046b222312074)
+
+• Diagrama (arquitetura) visual do projeto
+  [Drawn.io](https://drive.google.com/file/d/1isDRqsz836OQjDMEBPsWoWGXGNk72mcl/view?usp=sharing)
+
+• Link do Perfil Google Skills.
+  [Perfil Google Skills](https://www.skills.google/public_profiles/f462bc2a-69df-4de7-9062-c9611c2646e0)
+
 ## Instruções de instalação
 
 ### Requisitos minimos
